@@ -19,7 +19,7 @@ public class PathRequestSystem : ComponentSystem {
             Entities.ForEach((Entity e, ref AIControlled aIControlled) =>
             {
                 EntityManager.AddComponent<PathRequest>(e);
-                EntityManager.SetComponentData(e, new PathRequest { start = Random.Range(0, 9), end = Random.Range(0, 9) });
+                EntityManager.SetComponentData(e, new PathRequest { start = Random.Range(0, 99), end = Random.Range(0, 99) });
             });
         
      }
@@ -44,7 +44,6 @@ public class PathfindingSystem : ComponentSystem
                 nodes = new NativeArray<PathNode>(pathNodeArray, Allocator.TempJob),
                 connections = new NativeArray<Connection>(connections, Allocator.TempJob),
         };
-
             pathfindingJobs.Add(job);
             pathfindingJobHandles.Add(job.Schedule());
             PostUpdateCommands.RemoveComponent<PathRequest>(e);

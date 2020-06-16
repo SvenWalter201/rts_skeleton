@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using Unity.Mathematics;
+using System.IO;
+using Unity.Entities;
+using Unity.Transforms;
 
 public class GameWorldManager
 {
@@ -18,38 +21,37 @@ public class GameWorldManager
 
     private void InitializeTestData()
     {
-        PathNode a = new PathNode { worldPosition = new float3(0,0,0) };
-        PathNode b = new PathNode { worldPosition = new float3(5, 5, 0) };
-        PathNode c = new PathNode { worldPosition = new float3(7, 0, 0) };
-        PathNode d = new PathNode { worldPosition = new float3(5, -3, 0) };
-        PathNode e = new PathNode { worldPosition = new float3(1, -7, 0) };
-        PathNode f = new PathNode { worldPosition = new float3(6, -6, 0) };
-        PathNode g = new PathNode { worldPosition = new float3(10, -2, 0) };
-        PathNode h = new PathNode { worldPosition = new float3(10, -10, 0) };
-        PathNode i = new PathNode { worldPosition = new float3(6, -14, 0) };
-        PathNode j = new PathNode { worldPosition = new float3(11, -15, 0) };
-        PathNode k = new PathNode { worldPosition = new float3(9, -20, 0) };
+        int width = 20;
+        int height = 20;
+        float distance = 2f;
 
-        Connection ab = new Connection { cost = 7, to = 0, from = 1 };
-        Connection bc = new Connection { cost = 6, to = 1, from = 2 };
-        Connection cf = new Connection { cost = 6, to = 2, from = 5 };
-        Connection cg = new Connection { cost = 6, to = 2, from = 6 };
-        Connection ad = new Connection { cost = 6, to = 0, from = 3 };
-        Connection ae = new Connection { cost = 7, to = 0, from = 4 };
-        Connection ef = new Connection { cost = 6, to = 4, from = 5 };
-        Connection df = new Connection { cost = 3, to = 3, from = 5 };
-        Connection gh = new Connection { cost = 8, to = 6, from = 7 };
-        Connection ei = new Connection { cost = 9, to = 4, from = 8 };
-        Connection ik = new Connection { cost = 7, to = 8, from = 10};
-        Connection jk = new Connection { cost = 6, to = 9, from = 10 };
-        Connection hj = new Connection { cost = 5, to = 7, from = 9 };
-        Connection ij = new Connection { cost = 5, to = 8, from = 9 };
-        Connection fi = new Connection { cost = 8, to = 5, from = 8 };
-        Connection ih = new Connection { cost = 6.5f, to = 8, from = 7 };
-
-       connections = new Connection[] { ab, bc, cf, cg, ad, ae, ef, df, gh, ei, ik, jk, hj, ij, fi, ih };
-       nodes = new PathNode[]{ a, b, c, d, e, f, g, h, i, j, k };
+        connections = new Connection[width * (height-1) + height * (width-1)];
+        nodes = new PathNode[width * height];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                nodes[GetIndex(width,x,y)] = new PathNode { worldPosition = new float3(x*distance, y*distance, 0) };
+            }
+        }
+        int conIndex = 0;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (x < width - 1) {
+                    connections[conIndex] = new Connection { cost = distance, to = GetIndex(width, x, y), from = GetIndex(width, x + 1, y) };
+                    conIndex++;
+                }
+                if(y < height - 1){
+                    connections[conIndex] = new Connection { cost = distance, to = GetIndex(width, x, y), from = GetIndex(width, x, y+1) };
+                    conIndex++;
+                }
+            }
+        }
     }
+
+    public int GetIndex(int width, int x, int y)
+    {
+        return y * width + x;
+    }
+
 
     public static GameWorldManager Instance()
     {

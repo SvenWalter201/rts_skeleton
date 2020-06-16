@@ -9,6 +9,12 @@ using UnityEditor.Experimental.GraphView;
 using System.IO.IsolatedStorage;
 using Unity.Collections.LowLevel.Unsafe;
 
+
+public struct GridPathRequest : IComponentData
+{
+	public int2 start;
+	public int2 end;
+}
 public struct PathRequest : IComponentData
 {
 	//Todo: implement position to node conversion

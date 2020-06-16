@@ -12,18 +12,33 @@ public class GameWorldManager
     public PathNode[] nodes;
     public Connection[] connections;
     public Heuristic heu;
+    public Grid<GridPathNode> grid;
 
     private static GameWorldManager gwm;
 
     private GameWorldManager() {
-        InitializeTestData();
+        InitializeGrid();
+        //InitializeTestData();
+    }
+
+    private void InitializeGrid()
+    {
+        grid = new Grid<GridPathNode>(10, 10, 1.0f, new Vector2(-10, -10), (int x, int y) => new GridPathNode
+        {
+            position = new int2(x, y),
+            previous = -1,
+            walkable = true,
+            closed = false,
+            cost = 99999,
+            sum = 99999
+    });
     }
 
     private void InitializeTestData()
     {
-        int width = 20;
-        int height = 20;
-        float distance = 2f;
+        int width = 10;
+        int height = 10;
+        float distance = 1.0f;
 
         connections = new Connection[width * (height-1) + height * (width-1)];
         nodes = new PathNode[width * height];

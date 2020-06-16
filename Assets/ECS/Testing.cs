@@ -97,7 +97,7 @@ public class Testing : MonoBehaviour
 
     private void CreatePathfindingAIAgents()
     {
-        manager.CreateEntity(pathfindingAgent, 100, Allocator.Temp);
+        manager.CreateEntity(pathfindingAgent, 1000, Allocator.Temp);
     }
 
     private void CreatePhysicsTestEntities()
